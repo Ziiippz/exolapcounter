@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lap Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: transparent; /* Stream-friendly */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #counter-container {
+            width: 350px; /* Match progress bar width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #counter-box {
+            width: 100%;
+            background: grey; /* Box background */
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 60px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+        }
+        #current-lap {
+            color: white; /* Default color */
+            transition: color 0.3s ease-in-out;
+        }
+        #max-laps {
+            color: white; /* Target lap */
+        }
+        #progress-container {
+            width: 100%;
+            height: 50px;
+            background: #333;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: lime;
+            transition: width 0.3s ease-in-out;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 12px;
+        }
+        #progress-text {
+            position: relative;
+            z-index: 2;
+            transition: transform 0.6s;
+            backface-visibility: hidden;
+        }
+        .flip {
+            transform: rotateX(180deg);
+        }
+        #buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        button {
+            font-size: 22px;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .btn-lap { background: green; color: white; }
+        .btn-reset { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Lap Counter</h2>
+    <div id="counter-container">
+        <div id="counter-box">
+            <span id="current-lap">0</span> / <span id="max-laps">50</span>
+        </div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+            <div id="progress-text">0%</div>
+        </div>
+        <div id="buttons">
+            <button class="btn-lap" onclick="increaseLap()">Lap</button>
+            <button class="btn-reset" onclick="resetLap()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let lapCount = 0;
+        const maxLaps = 50;
+
+        function increaseLap() {
+            if (lapCount < maxLaps) {
+                lapCount++;
+                updateCounter();
+            }
+        }
+
+        function resetLap() {
+            lapCount = 0;
+            updateCounter();
+        }
+
+        function updateCounter() {
+            const currentLap = document.getElementById("current-lap");
+            const maxLapsText = document.getElementById("max-laps");
+            const progressBar = document.getElementById("progress-bar");
+            const progressText = document.getElementById("progress-text");
+
+            currentLap.innerText = lapCount;
+
+            // Update progress bar width
+            const progress = (lapCount / maxLaps) * 100;
+            progressBar.style.width = progress + "%";
+
+            // Flip animation for progress text
+            progressText.classList.add("flip");
+            setTimeout(() => {
+                progressText.innerText = lapCount >= maxLaps ? "Done" : progress.toFixed(0) + "%";
+                progressText.classList.remove("flip");
+            }, 300);
+
+            // Change colors when reaching 50
+            if (lapCount >= maxLaps) {
+                currentLap.style.color = "lime";
+                maxLapsText.style.color = "lime";
+            } else {
+                currentLap.style.color = "white";
+                maxLapsText.style.color = "white";
+            }
+        }
+    </script>
+</body>
+</html>
